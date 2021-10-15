@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "fastapi-template"
+version = "0.1.0"
+description = ""
+authors = ["keigohtr <keigoht@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.70.0"
+uvicorn = "^0.15.0"
+python-json-logger = "^2.0.2"
+certifi = "^2021.10.8"
+alembic = "^1.7.4"
+PyMySQL = "^1.0.2"
+SQLAlchemy = "^1.4.25"
+tenacity = "^8.0.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+pytest-cov = "^3.0.0"
+mypy = "^0.910"
+black = "^21.9b0"
+flake8 = "^4.0.1"
+isort = "^5.9.3"
+autoflake = "^1.4"
+coverage = "^6.0.2"
+httpx = "^0.20.0"
+pytest-asyncio = "^0.15.1"
+sqlalchemy-stubs = "^0.4"
+SQLAlchemy-Utils = "^0.37.8"
+pytest-xdist = "^2.4.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+line_length=120
+
+[tool.black]
+line-length = 120
