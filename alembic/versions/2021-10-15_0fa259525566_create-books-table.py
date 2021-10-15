@@ -1,7 +1,7 @@
-"""empty message
+"""Create Books table
 
 Revision ID: 0fa259525566
-Revises: 
+Revises:
 Create Date: 2021-10-15 08:05:48.824138
 
 """
