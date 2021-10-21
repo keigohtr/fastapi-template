@@ -2,9 +2,8 @@ import pytest
 from sqlalchemy.orm import Session
 
 from app.entities import BookCreate
-from app.services.book_service import BookService
 from app.exceptions import EntityNotFoundException, InvalidInputException
-
+from app.services.book_service import BookService
 from tests.utils.create_resources import create_random_book
 
 
@@ -56,7 +55,7 @@ def test_fetch_book_happycase(book_service: BookService, function_db: Session):
 
 
 def test_fetch_book_invalid(book_service: BookService, function_db: Session):
-    book = create_random_book(function_db)
+    create_random_book(function_db)
 
     with pytest.raises(EntityNotFoundException):
         book_service.fetch_book(function_db, book_id="noexist")
