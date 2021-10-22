@@ -6,7 +6,9 @@ from typing import Any, Callable, Optional
 
 from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app import entities
 from app.apis import health
@@ -64,6 +66,21 @@ def configure_app(book_service: BookService) -> FastAPI:
             }
         )
         return response
+
+    @api.exception_handler(StarletteHTTPException)
+    async def custom_http_exception_handler(_: Request, exc: StarletteHTTPException) -> JSONResponse:
+        """HTTPException"""
+        message = entities.Message(code=MessageCodeEnum.UNPROCESSABLE_ENTITY, message="", detail=exc.detail)
+        headers = getattr(exc, "headers", None)
+        if headers:
+            return JSONResponse(status_code=exc.status_code, content=jsonable_encoder(message.dict()), headers=headers)
+        return JSONResponse(status_code=exc.status_code, content=jsonable_encoder(message.dict()))
+
+    @api.exception_handler(RequestValidationError)
+    async def custom_request_validation_exception_handler(_: Request, exc: RequestValidationError) -> JSONResponse:
+        """RequestValidationError"""
+        message = entities.Message(code=MessageCodeEnum.UNPROCESSABLE_ENTITY, message="", detail=exc.errors())
+        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=jsonable_encoder(message.dict()))
 
     @api.exception_handler(EntityNotFoundException)
     async def entity_not_found_exception_handler(_: Request, exc: EntityNotFoundException) -> JSONResponse:
