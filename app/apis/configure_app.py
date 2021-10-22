@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 
 from app import entities
 from app.apis import health
+from app.apis.api_v1.router import v1_router
 from app.entities.message import MessageCodeEnum
 from app.exceptions import EntityNotFoundException, InvalidInputException
 from app.logger import logger
@@ -19,6 +20,7 @@ from app.services.book_service import BookService
 def configure_app(book_service: BookService) -> FastAPI:
     api = FastAPI(title="FastAPI template")
     api.include_router(health.router, tags=["health"])
+    api.include_router(v1_router(book_service), prefix="/v1")
 
     @api.middleware("http")
     async def log_request(request: Request, call_next: Callable) -> Any:
