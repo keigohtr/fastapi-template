@@ -1,7 +1,6 @@
 FROM python:3.8 AS production
 
 COPY ./pyproject.toml /app/pyproject.toml
-COPY ./poetry.toml /app/poetry.toml
 COPY ./poetry.lock /app/poetry.lock
 COPY . /app
 
