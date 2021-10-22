@@ -1,0 +1,42 @@
+version: '3.4'
+services:
+  app:
+    container_name: fastapi-template
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: development
+    command: bash -c +e "make start"
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      DB_HOST: db
+      DB_NAME: default
+      DB_USER: mysql
+      DB_PASSWORD: mysql
+      TEST_DB_HOST: db
+      TEST_DB_NAME: default
+      TEST_DB_USER: root
+      TEST_DB_PASSWORD: mysql
+      LOG_LEVEL: ERROR
+      SQL_LOG_LEVEL: ERROR
+    depends_on:
+      - db
+  db:
+    container_name: fastapi-template-db
+    image: mysql:5.7.35
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: default
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+      MYSQL_ROOT_PASSWORD: mysql
+
+volumes:
+  mysql-db:
+    driver: local

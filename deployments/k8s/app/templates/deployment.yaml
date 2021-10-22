@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-template
+  namespace: default
+  labels:
+    app: fastapi-template
+spec:
+  ports:
+    - name: http
+      port: 5000
+      targetPort: 5000
+  type: NodePort
+  selector:
+    app: fastapi-template
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-template
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: fastapi-template
+  template:
+    metadata:
+      labels:
+        app: fastapi-template
+    spec:
+      # TODO: It might be better to specify nodeSelector to allocate pods to the application instances.
+      # nodeSelector:
+      #   m5.large: "true"
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - fastapi-template
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+      containers:
+        - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: Always
+          name: fastapi-template
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          env:
+            - name: STAGE
+              value: {{ .Values.env.stage}}
+      restartPolicy: Always
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: fastapi-template
+  namespace: default
+spec:
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: fastapi-template
+  targetCPUUtilizationPercentage: {{ .Values.hpa.targetCPUUtilizationPercentage }}
