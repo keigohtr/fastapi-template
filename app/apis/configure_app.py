@@ -14,7 +14,7 @@ from app import entities
 from app.apis import health
 from app.apis.api_v1.router import v1_router
 from app.entities.message import MessageCodeEnum
-from app.exceptions import EntityNotFoundException, InvalidInputException
+from app.exceptions import ApiError
 from app.logger import logger
 from app.services.book_service import BookService
 
@@ -67,6 +67,12 @@ def configure_app(book_service: BookService) -> FastAPI:
         )
         return response
 
+    @api.exception_handler(ApiError)
+    async def api_error_handler(_: Request, exc: ApiError) -> JSONResponse:
+        """ApiError"""
+        message = entities.Message(code=exc.code, message=str(exc))
+        return JSONResponse(status_code=exc.status_code, content=jsonable_encoder(message.dict()))
+
     @api.exception_handler(StarletteHTTPException)
     async def custom_http_exception_handler(_: Request, exc: StarletteHTTPException) -> JSONResponse:
         """HTTPException"""
@@ -80,18 +86,6 @@ def configure_app(book_service: BookService) -> FastAPI:
     async def custom_request_validation_exception_handler(_: Request, exc: RequestValidationError) -> JSONResponse:
         """RequestValidationError"""
         message = entities.Message(code=MessageCodeEnum.UNPROCESSABLE_ENTITY, message="", detail=exc.errors())
-        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=jsonable_encoder(message.dict()))
-
-    @api.exception_handler(EntityNotFoundException)
-    async def entity_not_found_exception_handler(_: Request, exc: EntityNotFoundException) -> JSONResponse:
-        """EntityNotFoundException"""
-        message = entities.Message(code=MessageCodeEnum.NOT_FOUND, message=str(exc))
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=jsonable_encoder(message.dict()))
-
-    @api.exception_handler(InvalidInputException)
-    async def invalid_input_exception_handler(_: Request, exc: InvalidInputException) -> JSONResponse:
-        """InvalidInputException"""
-        message = entities.Message(code=MessageCodeEnum.UNPROCESSABLE_ENTITY, message=str(exc))
         return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=jsonable_encoder(message.dict()))
 
     @api.exception_handler(Exception)

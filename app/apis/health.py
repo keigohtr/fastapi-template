@@ -11,7 +11,7 @@ from app.entities.message import MessageCodeEnum
 router = APIRouter()
 
 
-@router.get("/", response_model=entities.Message)
+@router.get("/", response_model=entities.Message, include_in_schema=False)
 @router.get("/health", response_model=entities.Message)
 def health() -> Any:
     """Health check
