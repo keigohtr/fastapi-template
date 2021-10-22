@@ -38,7 +38,6 @@ docker-compose run app make test
 ```
 
 ## Cleanup
-
 ```shell
 docker-compose stop
 docker-compose rm
