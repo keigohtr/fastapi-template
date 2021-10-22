@@ -112,5 +112,5 @@ async def test_fetch_book_invalid(client: AsyncClient, session_db: Session) -> N
     create_random_book(session_db, title="book1")
 
     headers = {"x-requester": "dummy"}
-    response = await client.get(f"/v1/books/noexist", headers=headers)
+    response = await client.get("/v1/books/noexist", headers=headers)
     assert response.status_code == 404

@@ -1,7 +1,7 @@
 """
 Book API
 """
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import APIRouter, Depends, Path, Query
 from sqlalchemy.orm import Session
@@ -36,8 +36,8 @@ def create_book_router(book_service: BookService) -> APIRouter:
     async def list_books(
         *,
         db: Session = Depends(session.get_db),
-        limit: Optional[int] = Query(10, ge=1, le=100),
-        offset: Optional[int] = Query(0, ge=0),
+        limit: int = Query(10, ge=1, le=100),
+        offset: int = Query(0, ge=0),
     ) -> Any:
         """GET /books
 

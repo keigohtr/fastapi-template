@@ -4,7 +4,7 @@ from app import entities
 from app.entities.message import MessageCodeEnum
 
 
-def test_message_happycase():
+def test_message_happycase() -> None:
     code = MessageCodeEnum.OK
     message = "ok"
     detail = {"key": "value"}
@@ -18,7 +18,7 @@ def test_message_happycase():
     assert entry.detail == detail
 
 
-def test_message_invalid():
+def test_message_invalid() -> None:
     code = MessageCodeEnum.OK
     message = "ok"
     detail = {"key": "value"}

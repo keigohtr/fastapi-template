@@ -5,13 +5,13 @@ import pytest
 from app import entities
 
 
-def test_bookcreate_happycase():
+def test_bookcreate_happycase() -> None:
     title = "title"
     entry = entities.BookCreate(title=title)
     assert entry.title == title
 
 
-def test_bookcreate_invalid():
+def test_bookcreate_invalid() -> None:
     with pytest.raises(ValueError):
         entities.BookCreate()
 
@@ -24,7 +24,7 @@ def test_bookcreate_invalid():
         entities.BookCreate(title=title)
 
 
-def test_book_happycase():
+def test_book_happycase() -> None:
     book_id = "123456789012"
     title = "title"
     created_at = updated_at = datetime.utcnow()
@@ -35,7 +35,7 @@ def test_book_happycase():
     assert entry.updated_at == updated_at
 
 
-def test_book_invalid():
+def test_book_invalid() -> None:
     book_id = "123456789012"
     title = "title"
     created_at = updated_at = datetime.utcnow()
@@ -53,7 +53,7 @@ def test_book_invalid():
         entities.Book(book_id=book_id, title=title, created_at=created_at)
 
 
-def test_books_happycase():
+def test_books_happycase() -> None:
     book_id = "123456789012"
     title = "title"
     created_at = updated_at = datetime.utcnow()
@@ -68,6 +68,6 @@ def test_books_happycase():
     assert len(books.entries) == 0
 
 
-def test_books_invalid():
+def test_books_invalid() -> None:
     with pytest.raises(ValueError):
         entities.Books()
